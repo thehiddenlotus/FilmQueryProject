@@ -2,6 +2,7 @@ package com.skilldistillery.filmquery.entities;
 
 import java.util.ArrayList;
 import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
+import com.skilldistillery.filmquery.entities.Actor;
 
 public class Film {
 	
@@ -109,9 +110,14 @@ public class Film {
 	
 	@Override
 	public String toString() {
-		return "Film ID:" + id + ", " + title + " " + releaseYear
-				+ " " + length + "min " + rating;
+		String result = "Film ID:" + id + " " + title + " " + releaseYear
+						+ " " + length + "min " + rating + "\n"+ description +"\nActors: \n";
+		for(Actor a : actors) {
+			result += a + "\n";
+		}
+		return result;
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -8,8 +8,8 @@ import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
 
 public class DatabaseAccessorObject implements DatabaseAccessor {
-	
-	private static final String URL = "jdbc:mysql://localhost:3306/sdvid?useSSL=false";	
+
+	private static final String URL = "jdbc:mysql://localhost:3306/sdvid?useSSL=false";
 	private String user = "student";
 	private String pass = "student";
 
@@ -60,7 +60,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			if (actorResult.next()) {
 				actor = new Actor(actorResult.getInt(1), actorResult.getString(2), actorResult.getString(3));
 			}
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return actor;
@@ -72,7 +72,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
 			String sql = "SELECT id, first_name, last_name FROM actor JOIN film_actor "
-					+ "ON actor.id = actor.id WHERE film_id = ?";
+					+ "ON actor.id = film_actor.actor_id WHERE film_id = ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setInt(1, filmID);
 			ResultSet filmActors = stmt.executeQuery();
@@ -82,6 +82,7 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 				String lastName = filmActors.getString(3);
 				Actor actor = new Actor(id, firstName, lastName);
 				actors.add(actor);
+				actor = null;
 			}
 			filmActors.close();
 			stmt.close();
@@ -90,6 +91,44 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			e.printStackTrace();
 		}
 		return actors;
+	}
+
+	@Override
+	public List<Film> findFilmsByKeyword(String keyword) {
+		List<Film> films = new ArrayList<>();
+		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+			String sql = "SELECT id, title, description, release_year, language_id, rental_duration, "
+					+ " rental_rate, length, replacement_cost, rating, special_features "
+					+ " FROM film WHERE title LIKE '%?%' OR description LIKE '%?%";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, keyword);
+			stmt.setString(2, keyword);
+			ResultSet filmResult = stmt.executeQuery();
+			if (filmResult.next()) {
+				Film film = null;
+				int filmId = filmResult.getInt(1);
+				String title = filmResult.getString(2);
+				String desc = filmResult.getString(3);
+				int releaseYear = filmResult.getShort(4);
+				int langId = filmResult.getInt(5);
+				int rentDur = filmResult.getInt(6);
+				double rate = filmResult.getDouble(7);
+				int length = filmResult.getInt(8);
+				double repCost = filmResult.getDouble(9);
+				String rating = filmResult.getString(10);
+				String features = filmResult.getString(11);
+				film = new Film(filmId, title, desc, releaseYear, langId, rentDur, rate, length, repCost, rating,
+						features);
+				films.add(film);
+			}
+			filmResult.close();
+			stmt.close();
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return films;
 	}
 
 }
