@@ -5,7 +5,7 @@ import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
 import com.skilldistillery.filmquery.entities.Actor;
 
 public class Film {
-	
+
 	private int id;
 	private String title;
 	private String description;
@@ -18,9 +18,10 @@ public class Film {
 	private String rating;
 	private String specialFeatures;
 	private ArrayList<Actor> actors;
+	private String lang;
+
 	private DatabaseAccessorObject dbAccess = new DatabaseAccessorObject();
-	
-	
+
 	public Film(int id, String title, String description, Integer releaseYear, int languageID, int rentalDuration,
 			double rentalRate, Integer length, double replacementCost, String rating, String specialFeatures) {
 		super();
@@ -37,12 +38,14 @@ public class Film {
 		this.specialFeatures = specialFeatures;
 		this.actors = new ArrayList<Actor>();
 		actors.addAll(dbAccess.findActorsByFilmId(id));
-		
+		this.lang = dbAccess.findLanguage(id);
+
 	}
-	
+
 	public int getRentalDuration() {
 		return rentalDuration;
 	}
+
 	public void setRentalDuration(int rentalDuration) {
 		this.rentalDuration = rentalDuration;
 	}
@@ -50,74 +53,101 @@ public class Film {
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public Integer getReleaseYear() {
 		return releaseYear;
 	}
+
 	public void setReleaseYear(Integer releaseYear) {
 		this.releaseYear = releaseYear;
 	}
+
 	public int getLanguageID() {
 		return languageID;
 	}
+
 	public void setLanguageID(int languageID) {
 		this.languageID = languageID;
 	}
+
 	public double getRentalRate() {
 		return rentalRate;
 	}
+
 	public void setRentalRate(double rentalRate) {
 		this.rentalRate = rentalRate;
 	}
+
 	public Integer getLength() {
 		return length;
 	}
+
 	public void setLength(Integer length) {
 		this.length = length;
 	}
+
 	public double getReplacementCost() {
 		return replacementCost;
 	}
+
 	public void setReplacementCost(double replacementCost) {
 		this.replacementCost = replacementCost;
 	}
+
 	public String getRating() {
 		return rating;
 	}
+
 	public void setRating(String rating) {
 		this.rating = rating;
 	}
+
 	public String getSpecialFeatures() {
 		return specialFeatures;
 	}
+
 	public void setSpecialFeatures(String specialFeatures) {
 		this.specialFeatures = specialFeatures;
 	}
-	
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
 	@Override
 	public String toString() {
-		String result = "Film ID:" + id + " " + title + " " + releaseYear
-						+ " " + length + "min " + rating + "\n"+ description +"\nActors: \n";
-		for(Actor a : actors) {
+		String result = "Film ID:" + id + " " + title + " " + releaseYear + " " + length + "min " + rating + " " + lang
+				+ "\n" + description + "\nActors: \n";
+		for (Actor a : actors) {
 			result += a + "\n";
 		}
 		return result;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -138,6 +168,7 @@ public class Film {
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -189,6 +220,5 @@ public class Film {
 			return false;
 		return true;
 	}
-	
-	
+
 }

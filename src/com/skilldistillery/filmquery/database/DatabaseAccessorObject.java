@@ -96,17 +96,18 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	@Override
 	public List<Film> findFilmsByKeyword(String keyword) {
 		List<Film> films = new ArrayList<>();
+		Film film = null;
+		keyword = "%"+keyword+"%";
 		try {
 			Connection conn = DriverManager.getConnection(URL, user, pass);
 			String sql = "SELECT id, title, description, release_year, language_id, rental_duration, "
 					+ " rental_rate, length, replacement_cost, rating, special_features "
-					+ " FROM film WHERE title LIKE '%?%' OR description LIKE '%?%";
+					+ " FROM film WHERE title LIKE ? OR description LIKE ?";
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, keyword);
 			stmt.setString(2, keyword);
 			ResultSet filmResult = stmt.executeQuery();
-			if (filmResult.next()) {
-				Film film = null;
+			while (filmResult.next()) {
 				int filmId = filmResult.getInt(1);
 				String title = filmResult.getString(2);
 				String desc = filmResult.getString(3);
@@ -129,6 +130,24 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			e.printStackTrace();
 		}
 		return films;
+	}
+
+	@Override
+	public String findLanguage(int filmId) {
+		String lang = null;
+		try {
+			Connection conn = DriverManager.getConnection(URL, user, pass);
+			String sql = "SELECT language.name FROM language JOIN film ON language.id = film.language_id WHERE film.id = ?";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, filmId);
+			ResultSet langRes = stmt.executeQuery();
+			if (langRes.next()) {
+				lang = langRes.getString(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lang;
 	}
 
 }
