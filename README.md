@@ -30,3 +30,4 @@ _Eclipse_
 5. The user menu will repeat after each decision unless the user should choose the option to exit the program.
 
 #### Lessons Learned
+There was a lot to learn with this project in order to get it fully functional. There were a lot of new pieces and parts that had to interact in a particular ways. It was a little confusing and difficult to make sure the connection is established and all of the statements prepared correctly. Being able to access a database is a major jump in functionality though.
